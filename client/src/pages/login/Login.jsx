@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useRef } from "react";
+import { useContext, useRef,useState } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../../context/Context";
 import "./login.css";
@@ -8,7 +8,7 @@ export default function Login() {
   const userRef = useRef();
   const passwordRef = useRef();
   const { dispatch, isFetching } = useContext(Context);
-
+  const [errorDis, setErrorDis] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
@@ -17,8 +17,16 @@ export default function Login() {
         username: userRef.current.value,
         password: passwordRef.current.value,
       });
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+      console.log(res);
+      if(res.data.status !== 'error'){
+        setErrorDis(true);
+        dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+      }else{
+        setErrorDis(true);
+        dispatch({ type: "LOGIN_FAILURE" });
+      }
     } catch (err) {
+      setErrorDis(true);
       dispatch({ type: "LOGIN_FAILURE" });
     }
   };
@@ -26,6 +34,7 @@ export default function Login() {
   return (
     <div className="login">
       <span className="loginTitle">Login</span>
+      {errorDis ? <span>Wrong Credentials</span> : <></> }
       <form className="loginForm" onSubmit={handleSubmit}>
         <label>Username</label>
         <input

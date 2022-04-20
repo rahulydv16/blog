@@ -17,7 +17,7 @@ export default function SinglePost() {
 
   useEffect(() => {
     const getPost = async () => {
-      const res = await axios.get(`${url}posts/` + path);
+      const res = await axios.get(`${url}/posts/` + path);
       setPost(res.data);
       setTitle(res.data.title);
       setDesc(res.data.desc);
@@ -27,8 +27,8 @@ export default function SinglePost() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`/posts/${post._id}`, {
-        data: { username: user.username },
+      await axios.delete(`${url}/posts/${post._id}`, {
+        data: { username: user.data.username },
       });
       window.location.replace("/");
     } catch (err) {}
@@ -36,8 +36,8 @@ export default function SinglePost() {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`/posts/${post._id}`, {
-        username: user.username,
+      await axios.put(`${url}/posts/${post._id}`, {
+        username: user.data.username,
         title,
         desc,
       });
@@ -62,7 +62,7 @@ export default function SinglePost() {
         ) : (
           <h1 className="singlePostTitle">
             {title}
-            {post.username === user?.username && (
+            {post.username === user?.data.username && (
               <div className="singlePostEdit">
                 <i
                   className="singlePostIcon far fa-edit"
