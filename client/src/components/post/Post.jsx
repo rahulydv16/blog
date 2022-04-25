@@ -9,9 +9,9 @@ export default function Post({ post }) {
       {post.photo && <img className="postImg" src={PF + post.photo} alt="" />}
       <div className="postInfo">
         <div className="postCats">
-          {post.categories.map((c) => (
-            <span className="postCat" key={post._id}>{c.name}</span>
-          ))}
+          
+            <span className="postCat" key={post._id}>{post.category}</span>
+         
         </div>
         <Link to={`/post/${post._id}`} className="link">
           <span className="postTitle">{post.title}</span>

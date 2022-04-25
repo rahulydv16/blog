@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import React from "react"
 import Header from "../../components/header/Header";
 import Posts from "../../components/posts/Posts";
 import Sidebar from "../../components/sidebar/Sidebar";
@@ -30,7 +31,7 @@ export default function Home() {
       <Header />
       <div className="home">
         <Posts posts={posts} />
-        <Sidebar />
+        <Sidebar data={posts}/>
       </div>
     </>
   );

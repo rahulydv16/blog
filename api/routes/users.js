@@ -52,7 +52,7 @@ router.delete("/:id", async (req, res) => {
 
 //GET USER
 router.get("/:id", async (req, res) => {
-  console.log('imhere')
+  
   try {
     const user = await User.findById(req.params.id);
     const { password, ...others } = user._doc;
