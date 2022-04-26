@@ -12,12 +12,12 @@ export default function TopBar() {
   };
   return (
     <div className="top">
-      <div className="topLeft">
+      {/* <div className="topLeft">
         <i className="topIcon fab fa-facebook-square"></i>
         <i className="topIcon fab fa-twitter-square"></i>
         <i className="topIcon fab fa-pinterest-square"></i>
         <i className="topIcon fab fa-instagram-square"></i>
-      </div>
+      </div> */}
       <div className="topCenter">
         <ul className="topList">
           <li className="topListItem">
@@ -25,16 +25,7 @@ export default function TopBar() {
               HOME
             </Link>
           </li>
-          <li className="topListItem">
-            <Link className="link" to="/">
-              ABOUT
-            </Link>
-          </li>
-          <li className="topListItem">
-            <Link className="link" to="/">
-              CONTACT
-            </Link>
-          </li>
+          
           <li className="topListItem">
             <Link className="link" to="/write">
               WRITE
@@ -48,7 +39,7 @@ export default function TopBar() {
       <div className="topRight">
         {user ? (
           <Link to="/settings">
-            <img className="topImg" src={PF+user.profilePic} alt="" />
+            {/* <img className="topImg" src={PF+user.profilePic} alt="" /> */}
           </Link>
         ) : (
           <ul className="topList">
@@ -64,7 +55,7 @@ export default function TopBar() {
             </li>
           </ul>
         )}
-        <i className="topSearchIcon fas fa-search"></i>
+        
       </div>
     </div>
   );

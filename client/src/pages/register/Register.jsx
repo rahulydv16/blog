@@ -36,10 +36,11 @@ export default function Register() {
         />
         <label>Email</label>
         <input
-          type="text"
+          type="email"
           className="registerInput"
           placeholder="Enter your email..."
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <label>Password</label>
         <input
