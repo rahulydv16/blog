@@ -1,40 +1,63 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./sidebar.css";
-import { url } from "../../config/config";
-export default function Sidebar() {
+
+import React from "react";
+
+
+
+export default function Sidebar({data}) {
   const [cats, setCats] = useState([]);
+  
+  
 
   useEffect(() => {
-    const getCats = async () => {
-      console.log('here')
-      const res = await axios.get(`${url}/categories`);
-      // const res = await fetch(`${url}/categories`,{
-      //   method : 'GET',
-
-      // }).then((res) => res.json())
-      //setCats(res.data);
-      console.log(res);
-    };
-    getCats();
-  }, []);
+    
+    let temp = [];
+    let map = new Map();
+    for(const d of data){
+        if(!map.has(d.category)){
+          temp.push(d.category);
+          map.set(d.category,d.category);
+        }
+    }
+    
+    setCats(temp);
+    
+    
+    
+  },[data]);
   return (
     <div className="sidebar">
-      <div className="sidebarItem">
-        
-      </div>
-      <div className="sidebarItem">
-        <span className="sidebarTitle">CATEGORIES</span>
-        <ul className="sidebarList">
-          {cats.map((c) => (
-            <Link to={`/?cat=${c.name}`} className="link">
-            <li className="sidebarListItem">{c.name}</li>
+      <div className="sidebarTitle">Categories</div>
+      <div className="listContainer">
+      {cats && cats.map((c) => (
+            
+            <div key={Math.random()} className="listItem">
+            <Link to={`/categories/${c}`} className="link" >
+            <div className="sidebarListItem">{c}</div>
             </Link>
+</div>
+
           ))}
-        </ul>
+      </div>
+      {/* <div className="sidebarItem">
+      <span className="sidebarTitle">CATEGORIES</span>
+        <div className="sidebarList">
+          {cats && cats.map((c) => (
+            // <Link to={`/?cat=${c.name}`} className="link">
+            <div className="sidebarListItem" key={id++}>{cats}</div>
+            
+          ))}
+        </div> */}
       </div>
       
-    </div>
+        
+      
+      
+
   );
 }
+
+

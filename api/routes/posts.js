@@ -15,14 +15,20 @@ router.post("/", async (req, res) => {
 
 //UPDATE POST
 router.put("/:id", async (req, res) => {
+  console.log(req.body);
   try {
     const post = await Post.findById(req.params.id);
-    if (post.username === req.body.username) {
+    if (post.username === req.body.username || req.body.isAdmin === 'true') {
       try {
+        const temp = {
+          username : req.body.username,
+          title : req.body.title,
+          desc : req.body.desc
+        }
         const updatedPost = await Post.findByIdAndUpdate(
           req.params.id,
           {
-            $set: req.body,
+            $set: temp,
           },
           { new: true }
         );

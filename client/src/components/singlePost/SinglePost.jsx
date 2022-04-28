@@ -14,21 +14,24 @@ export default function SinglePost() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [updateMode, setUpdateMode] = useState(false);
-
+  const [file, setFile] = useState('');
+  console.log(user)
   useEffect(() => {
     const getPost = async () => {
       const res = await axios.get(`${url}/posts/` + path);
+      console.log(res);
       setPost(res.data);
       setTitle(res.data.title);
       setDesc(res.data.desc);
     };
     getPost();
+    //console.log(post)
   }, [path]);
 
   const handleDelete = async () => {
     try {
       await axios.delete(`${url}/posts/${post._id}`, {
-        data: { username: user.username },
+        data: { username: user.data.username },
       });
       window.location.replace("/");
     } catch (err) {}
@@ -36,21 +39,56 @@ export default function SinglePost() {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`${url}/posts/${post._id}`, {
-        username: user.username,
+
+      const newPost = {
+        username : user.data.username,
         title,
         desc,
-      });
-      setUpdateMode(false)
+        isAdmin : 'false'
+      }
+
+      if(file){
+        const data =new FormData();
+        const filename = Date.now() + file.name;
+        data.append("name", filename);
+        data.append("file", file);
+        newPost.photo = filename;
+        try {
+          await axios.post(`${url}/upload`, data);
+        } catch (err) {console.log(err)}
+      }else{
+        newPost.photo = post.photo;
+      }
+      
+      if(user.data.isAdmin){
+        newPost.isAdmin = user.data.isAdmin;
+        newPost.username = post.username;
+      }
+    
+      //console.log(newPost);
+      await axios.put(`${url}/posts/${post._id}`, newPost);
+      setUpdateMode(false);
+      setPost(newPost);
     } catch (err) {}
   };
 
   return (
     <div className="singlePost">
       <div className="singlePostWrapper">
-        {post.photo && (
+        {post.photo && !updateMode ? (
+          
           <img src={PF + post.photo} alt="" className="singlePostImg" />
-        )}
+        ) : <div>
+            <label htmlFor="fileInput">
+            <i className="writeIcon fas fa-plus"></i>
+          </label>
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+          </div>}
         {updateMode ? (
           <input
             type="text"
@@ -62,7 +100,7 @@ export default function SinglePost() {
         ) : (
           <h1 className="singlePostTitle">
             {title}
-            {post.username === user?.username && (
+            {(post.username === user.data.username || (user && user.data && user.data.isAdmin === 'true')) && (
               <div className="singlePostEdit">
                 <i
                   className="singlePostIcon far fa-edit"

@@ -1,5 +1,5 @@
 import "./settings.css";
-import Sidebar from "../../components/sidebar/Sidebar";
+
 import { useContext, useState } from "react";
 import { Context } from "../../context/Context";
 import axios from "axios";
@@ -8,21 +8,31 @@ export default function Settings() {
   const [file, setFile] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  
   const [success, setSuccess] = useState(false);
 
   const { user, dispatch } = useContext(Context);
-  const PF = "http://localhost:5000/images/"
+  const PF = "http://localhost:5000/images/";
+  let imageUrl = '';
+  if(user && user.data && user.data.profilePic !== ''){
+    imageUrl = PF + user.data.profilePic;
+  }else{
+    imageUrl = 'https://www.pngkey.com/png/detail/950-9501315_katie-notopoulos-katienotopoulos-i-write-about-tech-user.png';
+  }
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch({ type: "UPDATE_START" });
+    console.log(user);
     const updatedUser = {
-      userId: user._id,
+      userId: user.data._id,
       username,
       email,
-      password,
+  
     };
+    console.log(updatedUser);
     if (file) {
       const data = new FormData();
       const filename = Date.now() + file.name;
@@ -34,12 +44,19 @@ export default function Settings() {
       } catch (err) {}
     }
     try {
-      console.log('here')
-      const res = await axios.put(`${url}/users/` + user._id, updatedUser);
+      if(updatedUser.email === ''){
+        updatedUser.email = user.data.email;
+      }
+      if(updatedUser.username === ''){
+        updatedUser.username = user.data.username;
+      }
+      
+      const res = await axios.put(`${url}/users/` + user.data._id, updatedUser);
       console.log(res);
       setSuccess(true);
-      dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
+      // dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
     } catch (err) {
+      console.log(err);
       dispatch({ type: "UPDATE_FAILURE" });
     }
   };
@@ -54,7 +71,7 @@ export default function Settings() {
           <label>Profile Picture</label>
           <div className="settingsPP">
             <img
-              src={file ? URL.createObjectURL(file) : PF+user.profilePic}
+              src={file ? URL.createObjectURL(file) : imageUrl}
               alt=""
             />
             <label htmlFor="fileInput">
@@ -79,11 +96,11 @@ export default function Settings() {
             placeholder={user.email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <label>Password</label>
+          {/* <label>Password</label>
           <input
             type="password"
             onChange={(e) => setPassword(e.target.value)}
-          />
+          /> */}
           <button className="settingsSubmit" type="submit">
             Update
           </button>
@@ -96,7 +113,7 @@ export default function Settings() {
           )}
         </form>
       </div>
-      <Sidebar />
+      
     </div>
   );
 }
